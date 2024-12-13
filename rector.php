@@ -24,10 +24,8 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-
 declare(strict_types=1);
 
-use PrestaShopBundle\Security\Annotation\DemoRestricted;
 use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
 use Rector\Config\RectorConfig;
@@ -35,37 +33,32 @@ use Rector\Php53\Rector\Ternary\TernaryToElvisRector;
 use Rector\Php55\Rector\Class_\ClassConstantToSelfClassRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Php56\Rector\FuncCall\PowToExpRector;
-use Rector\Php56\Rector\FunctionLike\AddDefaultValueForUndefinedVariableRector;
 use Rector\Php70\Rector\FunctionLike\ExceptionHandlerTypehintRector;
 use Rector\Php70\Rector\If_\IfToSpaceshipRector;
 use Rector\Php70\Rector\MethodCall\ThisCallOnStaticMethodToStaticCallRector;
+use Rector\Php70\Rector\StmtsAwareInterface\IfIssetToCoalescingRector;
 use Rector\Php70\Rector\Ternary\TernaryToNullCoalescingRector;
-use Rector\Php71\Rector\FuncCall\CountOnNullRector;
 use Rector\Php71\Rector\TryCatch\MultiExceptionCatchRector;
 use Rector\Php72\Rector\FuncCall\GetClassOnNullRector;
-use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
 use Rector\Php74\Rector\Assign\NullCoalescingOperatorRector;
 use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
-use Rector\Php74\Rector\FuncCall\ArraySpreadInsteadOfArrayMergeRector;
 use Rector\Php74\Rector\LNumber\AddLiteralSeparatorToNumberRector;
+use Rector\Php74\Rector\Property\RestoreDefaultNullToNullableTypePropertyRector;
 use Rector\Php74\Rector\Ternary\ParenthesizeNestedTernaryRector;
 use Rector\Php80\Rector\Catch_\RemoveUnusedVariableInCatchRector;
-use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php80\Rector\Class_\StringableForToStringRector;
+use Rector\Php80\Rector\FuncCall\ClassOnObjectRector;
 use Rector\Php80\Rector\FunctionLike\MixedTypeRector;
-use Rector\Php80\Rector\FunctionLike\UnionTypesRector;
+use Rector\Php80\Rector\NotIdentical\StrContainsRector;
 use Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector;
 use Rector\Php80\Rector\Ternary\GetDebugTypeRector;
-use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Php81\Rector\Array_\FirstClassCallableRector;
-use Rector\Php81\Rector\ClassConst\FinalizePublicClassConstantRector;
+use Rector\Php81\Rector\ClassMethod\NewInInitializerRector;
 use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
-use Rector\Php81\Rector\FunctionLike\IntersectionTypesRector;
 use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector;
-use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->paths([
@@ -76,7 +69,7 @@ return static function (RectorConfig $rectorConfig): void {
         [LevelSetList::UP_TO_PHP_81]
     );
 
-    /**
+    /*
      * Ignored rules for now as grouping them would create a huge PR impossible to review,
      * so I documented them here, I we can process them one by one.
      */
@@ -85,15 +78,12 @@ return static function (RectorConfig $rectorConfig): void {
         ClosureToArrowFunctionRector::class => '*',
         InlineConstructorDefaultToPropertyRector::class => '*',
         ClassPropertyAssignToConstructorPromotionRector::class => '*',
-        UnionTypesRector::class => '*',
+        RestoreDefaultNullToNullableTypePropertyRector::class => '*',
         MixedTypeRector::class => '*',
-        TypedPropertyFromAssignsRector::class => '*',
-        FinalizePublicClassConstantRector::class => '*',
-        CountOnNullRector::class => '*',
-        AddDefaultValueForUndefinedVariableRector::class => '*',
+        ClassOnObjectRector::class => '*',
+        IfIssetToCoalescingRector::class => '*',
         NullToStrictStringFuncCallArgRector::class => '*',
-        JsonThrowOnErrorRector::class => '*',
-        IntersectionTypesRector::class => '*',
+        NewInInitializerRector::class => '*',
         ReturnNeverTypeRector::class => '*',
         ChangeSwitchToMatchRector::class => '*',
         TernaryToNullCoalescingRector::class => '*',
@@ -106,8 +96,8 @@ return static function (RectorConfig $rectorConfig): void {
         ThisCallOnStaticMethodToStaticCallRector::class => '*',
         MultiExceptionCatchRector::class => '*',
         TernaryToElvisRector::class => '*',
+        StrContainsRector::class => '*',
         NullCoalescingOperatorRector::class => '*',
-        ArraySpreadInsteadOfArrayMergeRector::class => '*',
         AddLiteralSeparatorToNumberRector::class => '*',
         ParenthesizeNestedTernaryRector::class => '*',
         GetDebugTypeRector::class => '*',
@@ -116,8 +106,4 @@ return static function (RectorConfig $rectorConfig): void {
         ClassConstantToSelfClassRector::class => '*',
         OptionalParametersAfterRequiredRector::class => '*',
     ]);
-
-    $rectorConfig->ruleWithConfiguration(AnnotationToAttributeRector::class, [
-        new AnnotationToAttribute(DemoRestricted::class), ]
-    );
 };
